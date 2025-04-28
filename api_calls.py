@@ -3,6 +3,9 @@ from typing import List, Any, Dict, Optional
 import re
 from datetime import datetime
 
+import requests
+
+
 def send_data_to_api(data: List[List[Any]]) -> None:
     """
     Sendet Daten an eine API, basierend auf dem Event-Typ.
@@ -10,12 +13,11 @@ def send_data_to_api(data: List[List[Any]]) -> None:
     Args:
         data: Eine Liste von Zeilen aus der CSV-Datei
     """
-    # Dummy API-Endpunkte (müssen später spezifiziert werden)
     api_endpoints = {
-        "view": "https://api.example.com/view",
-        "cart": "https://api.example.com/cart",
-        "remove_from_cart": "https://api.example.com/remove_from_cart",
-        "purchase": "https://api.example.com/purchase"
+        "view": "http://localhost:8080/view",
+        "cart": "http://localhost:8080/cart",
+        "remove_from_cart": "http://localhost:8080/remove_from_cart",
+        "purchase": "http://localhost:8080/purchase"
     }
 
     for row in data:
@@ -26,8 +28,8 @@ def send_data_to_api(data: List[List[Any]]) -> None:
 
             # Erstelle ein Payload-Dictionary für die API
             payload = {
-                "event_time": row[0],
-                "event_type": row[1],
+                # "event_time": row[0],
+                # "event_type": row[1],
                 "product_id": row[2],
                 "category_id": row[3],
                 "category_code": row[4],
@@ -40,9 +42,8 @@ def send_data_to_api(data: List[List[Any]]) -> None:
             try:
                 # Sende die Daten an den entsprechenden API-Endpunkt
                 print(f"Sending {event_type} event to {endpoint}")
-                # TODO
-                # response = requests.post(endpoint, json=payload)
-                # print(f"Response status: {response.status_code}")
+                response = requests.post(endpoint, json=payload)
+                print(f"Response: {response}")
             except Exception as e:
                 print(f"Error sending data to API: {e}")
 
@@ -117,10 +118,10 @@ def send_single_event_to_api(row: List[Any]) -> None:
         row: Eine Zeile aus der CSV-Datei
     """
     api_endpoints = {
-        "view": "https://api.example.com/view",
-        "cart": "https://api.example.com/cart",
-        "remove_from_cart": "https://api.example.com/remove_from_cart",
-        "purchase": "https://api.example.com/purchase"
+        "view": "http://localhost:8080/view",
+        "cart": "http://localhost:8080/cart",
+        "remove_from_cart": "http://localhost:8080/remove_from_cart",
+        "purchase": "http://localhost:8080/purchase"
     }
 
     if len(row) > 1 and row[1] and row[1] in api_endpoints:
@@ -128,8 +129,8 @@ def send_single_event_to_api(row: List[Any]) -> None:
         endpoint = api_endpoints[event_type]
 
         payload = {
-            "event_time": row[0],
-            "event_type": row[1],
+            # "event_time": row[0],
+            # "event_type": row[1],
             "product_id": row[2],
             "category_id": row[3],
             "category_code": row[4],
@@ -141,8 +142,8 @@ def send_single_event_to_api(row: List[Any]) -> None:
 
         try:
             print(f"Sending {event_type} event to {endpoint}")
-            # TODO
-            # response = requests.post(endpoint, json=payload)
-            # print(f"Response status: {response.status_code}")
+            print(payload)
+            response = requests.post(endpoint, json=payload)
+            print(f"Response: {response}")
         except Exception as e:
             print(f"Error sending data to API: {e}")
